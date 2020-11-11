@@ -42,7 +42,33 @@ hashcode_t One_byte_hash_table<T>::hash(std::string const& s) const
 
     return ret;
 };
+template<typename T>
+struct polynomial_rolling : Chain_hash_table<T>
+{
+    using Chain_hash_table<T>::Chain_hash_table;
+    hashcode_t hash(std::string const& s) const override;
+};
 
+//hash(s)=s[0]+s[1]⋅p+s[2]⋅p2+...+s[n−1]⋅pn−1 mod m
+template<typename T>
+hashcode_t polynomial_rolling<T>::hash(std::string const& s) const
+{
+    hashcode_t ret = 0;
+    //31 for only lowercase letters of the English alphabet
+    //53 for both
+    const int p = 31;//a prime number roughly equal to the number of characters in the input alphabet.
+    //the probability of two random strings colliding is about 1/m
+    const int m = 1e9 + 9;// large prime number
+    long long p_pow = 1;
+
+    for (char c : s) {
+        //a->1 b->2...z->26
+        ret = (ret + (c - 'a' + 1) * p_pow) % m;
+        p_pow = (p_pow * p) % m;
+    }
+
+    return ret;
+};
 template<typename T>
 struct Eight_bytes_hash_table : Chain_hash_table<T>
 {

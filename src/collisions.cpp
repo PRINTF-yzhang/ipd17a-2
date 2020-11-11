@@ -20,6 +20,11 @@ int main()
     }
 
     {
+        polynomial_rolling<size_t> ht(10000);
+        hash_trial("polynomial_rolling", ht);
+    }
+
+    {
         Eight_bytes_hash_table<size_t> ht(10000);
         hash_trial("Eight_bytes", ht);
     }
